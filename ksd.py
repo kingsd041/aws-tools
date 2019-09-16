@@ -1,12 +1,10 @@
-import logging
 import boto3
-import time
-import paramiko
 from botocore.exceptions import ClientError
 from utils.connect_to_instance import *
 
 # Provision and launch the EC2 instance
 ec2_client = boto3.client('ec2', 'ca-central-1')
+
 
 def create_ec2_instance(instance_type,
                         keypair_name,
@@ -15,7 +13,7 @@ def create_ec2_instance(instance_type,
                         image_id,
                         min_count,
                         max_count,
-                        tag_specifications,):
+                        tag_specifications, ):
     """Provision and launch an EC2 instance
 
     The method returns without waiting for the instance to reach

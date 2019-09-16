@@ -33,12 +33,11 @@ def main():
 
     install_docker = input('是否安装docker [y/n]: ')
 
-
     min_count = int(ins_count if ins_count is not '' else 1)
     max_count = min_count
     instance_type = ins_type if ins_type is not '' else 't2.small'
     image_id = ins_image_id.strip() if ins_image_id is not '' else 'ami-0d0eaed20348a3389'
-    volume_size = int(ins_disk_size.strip()) if ins_disk_size is  not '' else 8
+    volume_size = int(ins_disk_size.strip()) if ins_disk_size is not '' else 8
 
     instance_name = ins_name.strip()
     keypair_name = 'hailong'
@@ -55,7 +54,7 @@ def main():
 
     ]
 
-    tag_specifications=[
+    tag_specifications = [
         {'ResourceType': 'instance',
          'Tags': [
              {
@@ -81,23 +80,24 @@ def main():
                                                 block_device_mapping=block_device_mapping,
                                                 tag_specifications=tag_specifications)
 
-        print(instance_info)
         if instance_info is not None:
             logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
             logging.info(f'    VPC ID: {instance_info["VpcId"]}')
             logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
             logging.info(f'    Current State: {instance_info["State"]["Name"]}')
             logging.info(f'    Instance Name: {instance_info["Tags"][0]["Value"]}')
+        print(instance_info)
 
         # Create the tag for the instance
-        #tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
-        #print(tags_info)
+        # tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
+        # print(tags_info)
 
         if install_docker == 'Y' or install_docker == 'y':
             instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
             install_docker_result = ksd.install_docker(instance_public_ip)
             assert 'Server: Docker Engine - Community' in install_docker_result, 'Install docker failed!'
             logging.info(f'EC2 Instance {instance_info["InstanceId"]} installed docker successfully!')
+
 
 if __name__ == '__main__':
     main()
