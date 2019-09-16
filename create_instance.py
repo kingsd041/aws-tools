@@ -87,6 +87,7 @@ def main():
             logging.info(f'    VPC ID: {instance_info["VpcId"]}')
             logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
             logging.info(f'    Current State: {instance_info["State"]["Name"]}')
+            logging.info(f'    Instance Name: {instance_info["Tags"][0]["Value"]}')
 
         # Create the tag for the instance
         #tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
@@ -96,7 +97,7 @@ def main():
             instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
             install_docker_result = ksd.install_docker(instance_public_ip)
             assert 'Server: Docker Engine - Community' in install_docker_result, 'Install docker failed!'
-            logging.info(f'{instance_info["InstanceId"]} installed docker successfully!')
+            logging.info(f'EC2 Instance {instance_info["InstanceId"]} installed docker successfully!')
 
 if __name__ == '__main__':
     main()
