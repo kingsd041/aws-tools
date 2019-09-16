@@ -1,6 +1,7 @@
 from __future__ import print_function
 import time
 import paramiko
+import logging
 
 SSH_KEY_PATH = '/Users/ksd/.ssh/id_rsa'
 
@@ -23,6 +24,7 @@ def connection(ip, ssh_username, seconds):
                         pkey=private_key)
             # The issue can solve 'SSH session not active'  https://github.com/paramiko/paramiko/issues/928
             if ssh.get_transport().active:
+                logging.info(f'Connection instance succeeded!')
                 break
         except:
             ssh.close()

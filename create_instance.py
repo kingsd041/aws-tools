@@ -55,33 +55,48 @@ def main():
 
     ]
 
+    tag_specifications=[
+        {'ResourceType': 'instance',
+         'Tags': [
+             {
+                 'Key': 'Name',
+                 'Value': instance_name
+             }
+         ]}
+    ]
+
     # Set up logging
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(asctime)s: %(message)s')
 
-    # Provision and launch the EC2 instance
-    instance_info = ksd.create_ec2_instance(image_id=image_id,
-                                            instance_type=instance_type,
-                                            keypair_name=keypair_name,
-                                            min_count=min_count,
-                                            max_count=max_count,
-                                            security_group=security_group,
-                                            block_device_mapping=block_device_mapping)
-    print(instance_info)
-    if instance_info is not None:
-        logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
-        logging.info(f'    VPC ID: {instance_info["VpcId"]}')
-        logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
-        logging.info(f'    Current State: {instance_info["State"]["Name"]}')
+    for _ in range(max_count):
 
-    # Create the tag for the instance
-    tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
-    print(tags_info)
+        # Provision and launch the EC2 instance
+        instance_info = ksd.create_ec2_instance(image_id=image_id,
+                                                instance_type=instance_type,
+                                                keypair_name=keypair_name,
+                                                min_count=1,
+                                                max_count=1,
+                                                security_group=security_group,
+                                                block_device_mapping=block_device_mapping,
+                                                tag_specifications=tag_specifications)
 
-    if install_docker == 'Y' or install_docker == 'y':
-        instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
-        result = ksd.install_docker(instance_public_ip)
-        assert 'Server: Docker Engine - Community' in result, 'Install docker failed!'
+        print(instance_info)
+        if instance_info is not None:
+            logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
+            logging.info(f'    VPC ID: {instance_info["VpcId"]}')
+            logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
+            logging.info(f'    Current State: {instance_info["State"]["Name"]}')
+
+        # Create the tag for the instance
+        #tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
+        #print(tags_info)
+
+        if install_docker == 'Y' or install_docker == 'y':
+            instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
+            install_docker_result = ksd.install_docker(instance_public_ip)
+            assert 'Server: Docker Engine - Community' in install_docker_result, 'Install docker failed!'
+            logging.info(f'{instance_info["InstanceId"]} installed docker successfully!')
 
 if __name__ == '__main__':
     main()
