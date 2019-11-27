@@ -29,7 +29,7 @@ def main():
                          'ami-0d0eaed20348a3389 -- Ubuntu1804 \n'
                          'ami-0080c730c4da27081 -- Windows 2019 Container\n'
                          '[ami-0d0eaed20348a3389 -- Ubuntu1804]\n:')
-    ins_disk_size = input('磁盘大小 [8]: ')
+    ins_disk_size = input('磁盘大小 [20]: ')
 
     install_docker = input('是否安装docker [y/n]: ')
 
@@ -37,7 +37,7 @@ def main():
     max_count = min_count
     instance_type = ins_type if ins_type is not '' else 't2.small'
     image_id = ins_image_id.strip() if ins_image_id is not '' else 'ami-0d0eaed20348a3389'
-    volume_size = int(ins_disk_size.strip()) if ins_disk_size is not '' else 8
+    volume_size = int(ins_disk_size.strip()) if ins_disk_size is not '' else 20
 
     instance_name = ins_name.strip()
     keypair_name = 'hailong'
@@ -54,21 +54,32 @@ def main():
 
     ]
 
-    tag_specifications = [
-        {'ResourceType': 'instance',
-         'Tags': [
-             {
-                 'Key': 'Name',
-                 'Value': instance_name
-             }
-         ]}
-    ]
 
     # Set up logging
     logging.basicConfig(level=logging.INFO,
                         format='%(levelname)s: %(asctime)s: %(message)s')
 
-    for _ in range(max_count):
+    for num in range(max_count):
+        if max_count > 1:
+            tag_specifications = [
+                {'ResourceType': 'instance',
+                 'Tags': [
+                     {
+                         'Key': 'Name',
+                         'Value': instance_name + str(num+1)
+                     }
+                 ]}
+            ]
+        else:
+            tag_specifications = [
+                {'ResourceType': 'instance',
+                 'Tags': [
+                     {
+                         'Key': 'Name',
+                         'Value': instance_name
+                     }
+                 ]}
+            ]
 
         # Provision and launch the EC2 instance
         instance_info = ksd.create_ec2_instance(image_id=image_id,
@@ -80,13 +91,14 @@ def main():
                                                 block_device_mapping=block_device_mapping,
                                                 tag_specifications=tag_specifications)
 
+        instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
         if instance_info is not None:
             logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
             logging.info(f'    VPC ID: {instance_info["VpcId"]}')
             logging.info(f'    Private IP Address: {instance_info["PrivateIpAddress"]}')
             logging.info(f'    Current State: {instance_info["State"]["Name"]}')
             logging.info(f'    Instance Name: {instance_info["Tags"][0]["Value"]}')
-        print(instance_info)
+            logging.info(f'    Instance PublicIP: {instance_public_ip}')
 
         # Create the tag for the instance
         # tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)

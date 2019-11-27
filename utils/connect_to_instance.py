@@ -24,7 +24,7 @@ def connection(ip, ssh_username, seconds):
                         pkey=private_key)
             # The issue can solve 'SSH session not active'  https://github.com/paramiko/paramiko/issues/928
             if ssh.get_transport().active:
-                logging.info(f'Connection instance succeeded!')
+                logging.info(f'Connection {ip} succeeded!')
                 break
         except:
             ssh.close()
