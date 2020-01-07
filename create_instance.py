@@ -11,7 +11,7 @@
 # language governing permissions and limitations under the License.
 
 import logging
-import ksd
+import aws_tools
 
 
 def main():
@@ -82,7 +82,7 @@ def main():
             ]
 
         # Provision and launch the EC2 instance
-        instance_info = ksd.create_ec2_instance(image_id=image_id,
+        instance_info = aws_tools.create_ec2_instance(image_id=image_id,
                                                 instance_type=instance_type,
                                                 keypair_name=keypair_name,
                                                 min_count=1,
@@ -91,7 +91,7 @@ def main():
                                                 block_device_mapping=block_device_mapping,
                                                 tag_specifications=tag_specifications)
 
-        instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
+        instance_public_ip = aws_tools.get_instance_public_ip(instance_info["InstanceId"])
         if instance_info is not None:
             logging.info(f'Launched EC2 Instance {instance_info["InstanceId"]}')
             logging.info(f'    VPC ID: {instance_info["VpcId"]}')
@@ -101,12 +101,12 @@ def main():
             logging.info(f'    Instance PublicIP: {instance_public_ip}')
 
         # Create the tag for the instance
-        # tags_info = ksd.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
+        # tags_info = aws_tools.create_instance_tags(instance_info["InstanceId"], 'Name', instance_name)
         # print(tags_info)
 
         if install_docker == 'Y' or install_docker == 'y':
-            instance_public_ip = ksd.get_instance_public_ip(instance_info["InstanceId"])
-            install_docker_result = ksd.install_docker(instance_public_ip)
+            instance_public_ip = aws_tools.get_instance_public_ip(instance_info["InstanceId"])
+            install_docker_result = aws_tools.install_docker(instance_public_ip)
             assert 'Server: Docker Engine - Community' in install_docker_result, 'Install docker failed!'
             logging.info(f'EC2 Instance {instance_info["InstanceId"]} installed docker successfully!')
 
