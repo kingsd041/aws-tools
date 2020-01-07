@@ -9,6 +9,26 @@
 
 
 ```
-# git clone https://github.com/kingsd041/run-aws-instance.git
-# python run-aws-instance/create_instance.py
+# git clone https://github.com/kingsd041/aws-tools.git
+# mv aws-tools aws
+```
+
+
+```
+ ksd@Hailong-MacBook-Pro  /usr/local/bin  cat ksd-launch-aws-instance
+#!/bin/bash
+
+python3 ~/aws/create_instance.py
+ ksd@Hailong-MacBook-Pro  /usr/local/bin  cat ksd-list-instances
+#!/bin/bash
+
+python3 ~/aws/ksd_list_instances.py
+ ksd@Hailong-MacBook-Pro  /usr/local/bin  cat ksd-terminate-all-instances
+#!/bin/bash
+
+python3 ~/aws/ksd_terminate_all_instances.py
+ ksd@Hailong-MacBook-Pro  /usr/local/bin  cat ksd-terminate-instances
+#!/bin/bash
+
+python3 /Users/ksd/aws/ksd_terminate_instances.py $1 $2 $3 $4 $5 $6 $7 $8
 ```
