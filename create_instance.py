@@ -12,7 +12,14 @@
 
 import logging
 import aws_tools
+import configparser
+import os
 
+root_dir = os.path.dirname(__file__)
+aws_config_file = '/aws-config.conf'
+
+config = configparser.ConfigParser()
+config.read(root_dir + aws_config_file)
 
 def main():
     """Exercise create_ec2_instance()"""
@@ -27,6 +34,7 @@ def main():
                      '[t2.small]\n: ')
     ins_image_id = input('镜像ID:\n'
                          'ami-0d0eaed20348a3389 -- Ubuntu1804 \n'
+                         'ami-0eb3e12d3927c36ef -- Ubuntu1604 \n'
                          'ami-0080c730c4da27081 -- Windows 2019 Container\n'
                          '[ami-0d0eaed20348a3389 -- Ubuntu1804]\n:')
     ins_disk_size = input('磁盘大小 [20]: ')
@@ -40,9 +48,9 @@ def main():
     volume_size = int(ins_disk_size.strip()) if ins_disk_size is not '' else 20
 
     instance_name = ins_name.strip()
-    keypair_name = 'hailong'
+    keypair_name = config.get('aws-config', 'keypair_name')
 
-    security_group = ['default']
+    security_group = [config.get('aws-config', 'security_group')]
     block_device_mapping = [
         {
             'DeviceName': '/dev/sda1',

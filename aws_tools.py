@@ -1,9 +1,16 @@
 import boto3
 from botocore.exceptions import ClientError
 from utils.connect_to_instance import *
+import configparser
+import os
 
-ec2_client = boto3.client('ec2', 'ca-central-1')
-ec2_resource = boto3.resource('ec2', 'ca-central-1')
+root_dir = os.path.dirname(__file__)
+aws_config_file = '/aws-config.conf'
+
+config = configparser.ConfigParser()
+config.read(root_dir + aws_config_file)
+ec2_client = boto3.client('ec2', config.get('aws-config', 'region'))
+ec2_resource = boto3.resource('ec2', config.get('aws-config', 'region'))
 
 
 def create_ec2_instance(instance_type,
