@@ -3,6 +3,7 @@ from botocore.exceptions import ClientError
 from utils.connect_to_instance import *
 import configparser
 import os
+import sys
 
 root_dir = os.path.dirname(__file__)
 aws_config_file = '/aws-config.conf'
@@ -163,11 +164,16 @@ def terminate_all_instances():
 def instance_id_conversion_name(instance_id):
     instance_name = []
     for ins_id in instance_id:
-        response = ec2_client.describe_instances(
-            InstanceIds=[
-                ins_id,
-            ],
-        )
+        try:
+            response = ec2_client.describe_instances(
+                InstanceIds=[
+                    ins_id,
+                ],
+            )
+        except ClientError:
+            print('Instance ID not found!')
+            sys.exit(0)
+
         ins_name = response["Reservations"][0]["Instances"][0]["Tags"][0]['Value']
         instance_name.append(ins_name)
     return instance_name
