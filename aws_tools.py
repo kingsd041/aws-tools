@@ -87,7 +87,7 @@ def get_instance_public_ip(instance_id):
 
 def install_docker(instance_ip, ssh_username='ubuntu'):
     logging.info(f'Installing docker...')
-    install_docker_command = 'curl https://releases.rancher.com/install-docker/18.09.sh | sh -'
+    install_docker_command = 'curl https://get.docker.com | VERSION=18.09 sh -s -'
     ssh_client = connection(instance_ip, ssh_username, seconds=2)
     result = executor(ssh_client, install_docker_command)
     return result
