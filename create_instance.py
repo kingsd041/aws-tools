@@ -41,11 +41,11 @@ def main():
 
     install_docker = input('是否安装docker [y/n]: ')
 
-    min_count = int(ins_count if ins_count is not '' else 1)
+    min_count = int(ins_count if ins_count != '' else 1)
     max_count = min_count
-    instance_type = ins_type if ins_type is not '' else 't2.small'
-    image_id = ins_image_id.strip() if ins_image_id is not '' else 'ami-0d0eaed20348a3389'
-    volume_size = int(ins_disk_size.strip()) if ins_disk_size is not '' else 20
+    instance_type = ins_type if ins_type != '' else 't2.small'
+    image_id = ins_image_id.strip() if ins_image_id != '' else 'ami-0d0eaed20348a3389'
+    volume_size = int(ins_disk_size.strip()) if ins_disk_size != '' else 20
 
     instance_name = ins_name.strip()
     keypair_name = config.get('aws-config', 'keypair_name')
