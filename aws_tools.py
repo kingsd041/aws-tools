@@ -182,6 +182,15 @@ def instance_id_conversion_name(instance_id):
         instance_name.append(ins_name)
     return instance_name
 
+def instance_id_conversion_name_1(instance_id):
+    instance_name = []
+    response = ec2_client.describe_instances(
+        InstanceIds=[
+            instance_id,
+        ],
+    )
+    ins_name = response["Reservations"][0]["Instances"][0]["Tags"][0]['Value']
+    return ins_name
 
 if __name__ == '__main__':
     pass
