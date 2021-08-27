@@ -1,3 +1,4 @@
+from re import I
 import boto3
 from botocore.exceptions import ClientError
 from utils.connect_to_instance import *
@@ -104,8 +105,11 @@ def list_instances():
         else:
             public_ip = instance.public_ip_address
             private_ip = instance.private_ip_address
+        for i in instance.tags:
+            if i.get("Key") == "Name":
+                instance_name = i.get("Value")
 
-        print(tplt.format(instance.id, instance.tags[0]['Value'], public_ip, private_ip, instance.instance_type,
+        print(tplt.format(instance.id, instance_name, public_ip, private_ip, instance.instance_type,
                           instance.state['Name'], instance.key_name))
 
 
