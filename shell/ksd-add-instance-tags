@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 /Users/ksd/aws/ksd_add_instance_tags.py $*

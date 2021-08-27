@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 ~/aws/ksd_terminate_all_instances.py
